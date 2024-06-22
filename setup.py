@@ -1,20 +1,15 @@
-#
-# Copyright (c) 2013, Prometheus Research, LLC
-# Released under MIT license, see `LICENSE` for details.
-#
-
 from setuptools import setup, find_namespace_packages
 
-NAME = "Cogs"
-VERSION = "0.4.5a0"
-DESCRIPTION = """Toolkit for developing command-line utilities in Python"""
+NAME = "NeoCogs"
+VERSION = "0.4.5a"
+DESCRIPTION = "Toolkit for developing command-line utilities in Python"
 with open('README', 'r') as f:
     LONG_DESCRIPTION = f.read()
-AUTHOR = """Kirill Simonov (Prometheus Research, LLC), Rework by Luis S. (MoccaDev)"""
+AUTHOR = "Kirill Simonov (Prometheus Research, LLC), Rework by Luis S. (MoccaDev)"
 AUTHOR_EMAIL = "krono159@proton.me"
 LICENSE = "MIT"
-URL = "pending"
-DOWNLOAD_URL = "http://pypi.python.org/pypi/Cogs"
+URL = "https://github.com/Krono159/NeoCogs"  
+DOWNLOAD_URL = "http://pypi.python.org/pypi/NeoCogs"
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -31,9 +26,9 @@ PACKAGE_DIR = {'': 'src'}
 INSTALL_REQUIRES = ['setuptools', 'PyYAML']
 ENTRY_POINTS = {
     'console_scripts': [
-        'cogs = cogs.run:main',
+        'neocogs = neocogs.run:main',
     ],
-    'cogs.extensions': [],
+    'neocogs.extensions': [],
 }
 
 setup(
@@ -41,6 +36,7 @@ setup(
     version=VERSION,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',  
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license=LICENSE,
