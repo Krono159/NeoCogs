@@ -1,13 +1,8 @@
-#
-# Copyright (c) 2013, Prometheus Research, LLC
-# Released under MIT license, see `LICENSE` for details.
-#
+# src/neocogs/log.py
 
-from .core import Failure, env
 import sys
 import os
 import re
-
 
 class COLORS:
     # ANSI escape sequences and style decorations.
@@ -43,15 +38,14 @@ class COLORS:
         'success': [S_BRIGHT, FG_GREEN],
     }
 
-
 def colorize(msg, file=None):
+    from .core import env  # Importar dentro de la función para evitar la circularidad
     # Convert styling decorations to ANSI escape sequences.
     if not msg:
         return msg
     if file is None:
         file = sys.stdout
     has_colors = file.isatty()
-
     def _replace(match):
         style = match.group('style')
         data = match.group('data')
@@ -61,11 +55,9 @@ def colorize(msg, file=None):
         lesc = "\x1b[%sm" % ";".join(str(ctrl)
                                      for ctrl in COLORS.styles[style])
         resc = "\x1b[%sm" % COLORS.S_RESET
-        return lesc + data + resc
-
+        return lesc+data+resc
     return re.sub(r"(?::(?P<style>[a-zA-Z]+):)?`(?P<data>[^`]*)`",
                   _replace, msg)
-
 
 def _out(msg, file, args, kwds):
     # Print a formatted message to a file.
@@ -75,32 +67,29 @@ def _out(msg, file, args, kwds):
     file.write(msg)
     file.flush()
 
-
 def log(msg="", *args, **kwds):
     """Display a message."""
-    _out(msg + "\n", sys.stdout, args, kwds)
-
+    _out(msg+"\n", sys.stdout, args, kwds)
 
 def debug(msg, *args, **kwds):
     """Display a debug message."""
+    from .core import env  # Importar dentro de la función para evitar la circularidad
     if env.debug:
-        _out(":debug:`#` " + msg + "\n", sys.stderr, args, kwds)
-
+        _out(":debug:`#` "+msg+"\n", sys.stderr, args, kwds)
 
 def warn(msg, *args, **kwds):
     """Display a warning."""
-    _out(":warning:`WARNING`: " + msg + "\n", sys.stderr, args, kwds)
-
+    _out(":warning:`WARNING`: "+msg+"\n", sys.stderr, args, kwds)
 
 def fail(msg, *args, **kwds):
     """Display an error message and return an exception object."""
-    _out(":warning:`FATAL ERROR`: " + msg + "\n", sys.stderr, args, kwds)
+    _out(":warning:`FATAL ERROR`: "+msg+"\n", sys.stderr, args, kwds)
+    from .core import Failure  # Importar dentro de la función para evitar la circularidad
     return Failure()
-
 
 def prompt(msg):
     """Prompt the user for input."""
     value = ""
     while not value:
-        value = input(msg + " ").strip()
+        value = input(msg+" ").strip()
     return value

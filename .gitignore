@@ -6,3 +6,4 @@ build
 dist
 sandbox
 *.json
+.envtk

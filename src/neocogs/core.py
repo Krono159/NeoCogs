@@ -1,16 +1,18 @@
-#
-# Copyright (c) 2013, Prometheus Research, LLC
-# Released under MIT license, see `LICENSE` for details.
-#
-
-import re
+import sys
 import types
-import itertools
+import os.path
+try:
+    # Python 3.
+    import importlib._bootstrap
+except ImportError:
+    # Python 2.
+    import importlib
 
+import pkg_resources
+import yaml
 
 class Failure(Exception):
     """Stops execution of a task."""
-
 
 class Environment(object):
     """Container for settings and other global parameters."""
@@ -18,7 +20,6 @@ class Environment(object):
     __slots__ = ('_states', '__dict__')
 
     class _context(object):
-
         def __init__(self, owner, **updates):
             self.owner = owner
             self.updates = updates
@@ -62,77 +63,9 @@ class Environment(object):
     def __call__(self, **updates):
         return self._context(self, **updates)
 
+from .log import warn, debug, fail
 
-class TaskSpec(object):
-    """Task specification."""
-
-    def __init__(self, name, code, args, opts,
-                 hint=None, help=None):
-        self.name = name
-        self.code = code
-        self.args = args
-        self.opts = opts
-        self.hint = hint
-        self.help = help
-        self.opt_by_name = {}
-        self.opt_by_key = {}
-        for opt in self.opts:
-            self.opt_by_name[opt.name] = opt
-            if opt.key is not None:
-                self.opt_by_key[opt.key] = opt
-
-
-class SettingSpec(object):
-    """Setting specification."""
-
-    def __init__(self, name, code, has_value=False, value_name=None,
-                 hint=None, help=None):
-        self.name = name
-        self.code = code
-        self.has_value = has_value
-        self.value_name = value_name
-        self.hint = hint
-        self.help = help
-
-
-class TopicSpec(object):
-    """Help topic specification."""
-
-    def __init__(self, name, code, hint=None, help=None):
-        self.name = name
-        self.code = code
-        self.hint = hint
-        self.help = help
-
-
-class ArgSpec(object):
-    """Task argument specification."""
-
-    def __init__(self, attr, name, check, default,
-                 is_optional=False, is_plural=False):
-        self.attr = attr
-        self.name = name
-        self.check = check
-        self.default = default
-        self.is_optional = is_optional
-        self.is_plural = is_plural
-
-
-class OptSpec(object):
-    """Task option specification."""
-
-    def __init__(self, attr, name, key, check, default,
-                 is_plural=False, has_value=False, value_name=None, hint=None):
-        self.attr = attr
-        self.name = name
-        self.key = key
-        self.check = check
-        self.default = default
-        self.is_plural = is_plural
-        self.has_value = has_value
-        self.value_name = value_name
-        self.hint = hint
-
+env = Environment()
 
 def task(T, is_default=False):
     """Registers the wrapped function/class as a task."""
@@ -167,11 +100,6 @@ def task(T, is_default=False):
             T_dict[varargs] = argument(default=(), plural=True)
             T_dict['_vararg'] = varargs
         norm_T = type(T.__name__, (object,), T_dict)
-    elif isinstance(T, types.ClassType):
-        T_dict = {}
-        T_dict['__module__'] = T.__module__
-        T_dict['__doc__'] = T.__doc__
-        norm_T = type(T.__name__, (T, object), T_dict)
     else:
         norm_T = T
 
@@ -243,11 +171,9 @@ def task(T, is_default=False):
     env.task_map[name] = spec
     return T
 
-
 def default_task(T):
     """Registers the wrapped function/class as the default task."""
     return task(T, True)
-
 
 def setting(S):
     """Registers the wrapped function as a setting."""
@@ -271,7 +197,6 @@ def setting(S):
     env.setting_map[name] = spec
     return S
 
-
 def topic(T):
     """Registers the wrapped function as a help topic."""
     assert isinstance(T, types.FunctionType), \
@@ -291,7 +216,6 @@ def topic(T):
     env.topic_map[name] = spec
     return T
 
-
 class argument(object):
     """Describes a task argument."""
 
@@ -309,7 +233,6 @@ class argument(object):
         if instance is None:
             return self
         raise AttributeError("unset argument")
-
 
 class option(object):
     """Describes a task option."""
@@ -333,11 +256,9 @@ class option(object):
         self.hint = hint
         self.order = next(self.CTR)
 
-
 def _to_name(keyword):
     # Convert an identifier or a keyword to a task/setting name.
     return keyword.lower().replace(' ', '-').replace('_', '-')
-
 
 def _introspect(fn):
     # Find function parameters and default values.
@@ -349,20 +270,19 @@ def _introspect(fn):
     idx = 0
     while idx < code.co_argcount:
         name = code.co_varnames[idx]
-        if idx < code.co_argcount - len(defaults):
+        if idx < code.co_argcount-len(defaults):
             params.append(name)
         else:
-            default = defaults[idx - code.co_argcount + len(defaults)]
+            default = defaults[idx-code.co_argcount+len(defaults)]
             params.append((name, default))
         idx += 1
-    if code.co_flags & 0x04:  # CO_VARARGS
+    if code.co_flags & 0x04: # CO_VARARGS
         varargs = code.co_varnames[idx]
         idx += 1
-    if code.co_flags & 0x08:  # CO_VARKEYWORDS
+    if code.co_flags & 0x08: # CO_VARKEYWORDS
         varkeywords = code.co_varnames[idx]
         idx += 1
     return params, varargs, varkeywords
-
 
 def _describe(fn):
     # Convert a docstring to a hint line and a description.
@@ -382,7 +302,7 @@ def _describe(fn):
         for line in lines:
             short_line = line.lstrip()
             if short_line:
-                line_indent = len(line) - len(short_line)
+                line_indent = len(line)-len(short_line)
                 if indent is None or line_indent < indent:
                     indent = line_indent
         if indent:
@@ -390,11 +310,7 @@ def _describe(fn):
         help = "\n".join(lines)
     return hint, help
 
-
-env = Environment()
-
-
-# Import and register neocogs components with the environment.
+# Al final del archivo
 import neocogs
 neocogs.env = env
 neocogs.task = task
