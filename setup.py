@@ -1,7 +1,7 @@
 from setuptools import setup, find_namespace_packages
 
 NAME = "NeoCogs"
-VERSION = "0.4.5a"
+VERSION = "0.4.5a1"
 DESCRIPTION = "Toolkit for developing command-line utilities in Python"
 with open('README', 'r') as f:
     LONG_DESCRIPTION = f.read()
@@ -11,7 +11,7 @@ LICENSE = "MIT"
 URL = "https://github.com/Krono159/NeoCogs"  
 DOWNLOAD_URL = "http://pypi.python.org/pypi/NeoCogs"
 CLASSIFIERS = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 2 - Pre-Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
