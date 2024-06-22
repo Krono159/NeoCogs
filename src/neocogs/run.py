@@ -13,14 +13,14 @@ import pkg_resources
 import yaml
 
 
-env.add(shell=Environment(name="Cogs",
+env.add(shell=Environment(name="NeoCogs",
                           description="""A task dispatching utility""",
-                          local_package='cogs.local',
-                          entry_point='cogs.extensions',
-                          config_name='cogs.conf',
+                          local_package='neocogs.local',
+                          entry_point='neocogs.extensions',
+                          config_name='neocogs.conf',
                           config_dirs=['/etc',
                                        os.path.join(sys.prefix, 'etc'),
-                                       os.path.expanduser('~/.cogs'),
+                                       os.path.expanduser('~/.neocogs'),
                                        os.path.abspath('.')]),
         debug=False,
         config_file=None,
@@ -52,7 +52,7 @@ def _init_setting(name, value=_DEFAULT, seen=set()):
 
 def _load_extensions():
     # Load standard tasks and settings.
-    __import__('cogs.std')
+    __import__('neocogs.std')
 
     # Load extensions registered using the entry point.
     if env.shell.entry_point:

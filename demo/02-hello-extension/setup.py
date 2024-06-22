@@ -1,11 +1,11 @@
 from setuptools import setup
 
 setup(
-    name='Cogs-Hello',
+    name='neocogs-Hello',
     version='0.1',
-    description="""A Cogs task to greet somebody""",
-    packages=['cogs.hello'],
+    description="""A NeoCogs task to greet somebody""",
+    packages=['neocogs.hello'],
     package_dir={'': 'src'},
-    install_requires=['Cogs'],
-    entry_points={ 'cogs.extensions': ['Hello = cogs.hello'] },
+    install_requires=['NeoCogs'],
+    entry_points={ 'NeoCogs.extensions': ['Hello = neocogs.hello'] },
 )

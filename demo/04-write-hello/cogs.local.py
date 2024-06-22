@@ -1,5 +1,5 @@
 
-from cogs import task, argument, option
+from neocogs import task, argument, option
 import sys, os
 
 @task

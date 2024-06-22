@@ -394,14 +394,14 @@ def _describe(fn):
 env = Environment()
 
 
-# Import and register cogs components with the environment.
-import cogs
-cogs.env = env
-cogs.task = task
-cogs.default_task = default_task
-cogs.setting = setting
-cogs.topic = topic
-cogs.argument = argument
-cogs.option = option
-cogs.Failure = Failure
-cogs.Environment = Environment
+# Import and register neocogs components with the environment.
+import neocogs
+neocogs.env = env
+neocogs.task = task
+neocogs.default_task = default_task
+neocogs.setting = setting
+neocogs.topic = topic
+neocogs.argument = argument
+neocogs.option = option
+neocogs.Failure = Failure
+neocogs.Environment = Environment

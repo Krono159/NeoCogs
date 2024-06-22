@@ -3,11 +3,11 @@ default:
 	@echo -n '$$ '
 	pip install -q -e .
 	@echo -n '$$ '
-	cogs hello world
+	neocogs hello world
 	@echo -n '$$ '
-	cogs hello
+	neocogs hello
 	@echo -n '$$ '
-	cogs help hello
+	neocogs help hello
 	@echo -n '$$ '
-	pip uninstall -q -y Cogs-Hello
+	pip uninstall -q -y neocogs-Hello
 

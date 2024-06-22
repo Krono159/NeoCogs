@@ -1,6 +1,6 @@
 
-from cogs import task, argument
-from cogs.log import log, fail
+from neocogs import task, argument
+from neocogs.log import log, fail
 
 @task
 def Factorial(n):

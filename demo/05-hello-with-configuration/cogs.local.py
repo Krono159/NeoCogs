@@ -1,5 +1,4 @@
-
-from cogs import env, task, setting
+from neocogs import env, task, setting
 import os
 
 @setting
@@ -15,5 +14,4 @@ def Default_Name(name=None):
 def Hello_With_Configuration(name=None):
     if name is None:
         name = env.default_name
-    print "Hello, %s!" % name.capitalize()
-
+    print("Hello, %s!" % name.capitalize())

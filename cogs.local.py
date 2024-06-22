@@ -4,8 +4,8 @@
 #
 
 
-from cogs import task, env
-from cogs.fs import exe
+from neocogs import task, env
+from neocogs.fs import exe
 
 
 @task
@@ -33,6 +33,6 @@ def PURGE_TEST():
 def LINT():
     """detect errors in the source code with PyFlakes"""
     with env(debug=True):
-        exe("pyflakes src/cogs")
+        exe("pyflakes src/neocogs")
 
 

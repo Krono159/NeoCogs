@@ -1,15 +1,15 @@
 
 default:
 	@echo -n '$$ '
-	cogs --default-name=world hello-with-configuration
+	neocogs --default-name=world hello-with-configuration
 	@echo -n '$$ '
-	COGS_DEFAULT_NAME=world cogs hello-with-configuration
+	COGS_DEFAULT_NAME=world neocogs hello-with-configuration
 	@echo -n '$$ '
-	echo "default-name: world" >cogs.conf
+	echo "default-name: world" >neocogs.conf
 	@echo -n '$$ '
-	cogs hello-with-configuration
+	neocogs hello-with-configuration
 	@echo -n '$$ '
-	rm cogs.conf
+	rm neocogs.conf
 	@echo -n '$$ '
-	cogs help default-name
+	neocogs help default-name
 
